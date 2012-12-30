@@ -1,21 +1,22 @@
 #!/bin/bash
-# Save user SSH public key if available.
-# XXX: Obviously not suitable for downloadable images.
+
+# CONTEXT: guest
+# PURPOSE: take "staged" ssh keys (see extra-data.d/62-ssh-key) and put them in the GUEST_USERS home directory
 
 set -e
 set -o xtrace
 
 if [ -e "/tmp/in_target.d/ssh-authorized-keys" ]; then
-    if ! [ -e "/home/ubuntu/.ssh" ]; then
-        sudo -Hiu ubuntu mkdir ~ubuntu/.ssh/
+    if ! [ -e "/home/${GUEST_USERNAME}/.ssh" ]; then
+        sudo -Hiu ${GUEST_USERNAME} mkdir ~${GUEST_USERNAME}/.ssh/
     fi
-    sudo -Hiu ubuntu dd of=~ubuntu/.ssh/authorized_keys conv=notrunc if=/tmp/in_target.d/ssh-authorized-keys
-    if ! [ -e "/home/ubuntu/.ssh/id_rsa" ]; then
-        sudo -Hiu ubuntu dd of=~ubuntu/.ssh/id_rsa if=/tmp/in_target.d/id_rsa
+    sudo -Hiu ${GUEST_USERNAME} dd of=~${GUEST_USERNAME}/.ssh/authorized_keys conv=notrunc if=/tmp/in_target.d/ssh-authorized-keys
+    if ! [ -e "/home/${GUEST_USERNAME}/.ssh/id_rsa" ]; then
+        sudo -Hiu ${GUEST_USERNAME} dd of=~${GUEST_USERNAME}/.ssh/id_rsa if=/tmp/in_target.d/id_rsa
         # perms have to be right on this file for ssh to work
-        sudo -Hiu ubuntu chmod 600 ~ubuntu/.ssh/id_rsa
-        sudo -Hiu ubuntu dd of=~ubuntu/.ssh/id_rsa.pub if=/tmp/in_target.d/id_rsa.pub
+        sudo -Hiu ${GUEST_USERNAME} chmod 600 ~${GUEST_USERNAME}/.ssh/id_rsa
+        sudo -Hiu ${GUEST_USERNAME} dd of=~${GUEST_USERNAME}/.ssh/id_rsa.pub if=/tmp/in_target.d/id_rsa.pub
     fi
+else
+    die "SSH Keys were not staged by host"
 fi
-
-# TODO should be an else here

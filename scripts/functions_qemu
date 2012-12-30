@@ -15,14 +15,16 @@ function build_vm() {
     exclaim "Actually building the image, this can take up to 15 minutes"
 
     HOMEDIR=$1
-    USERNAME=$2
+    HOST_USERNAME=$2
+    GUEST_USERNAME="$2-guest"
     UBUNTU_DISTRO_NAME=$3
     VM_PATH=$4
     SERVICE_TYPE=$5
 
     mkdir -p $VM_PATH
     export RELEASE=precise
-    export USERNAME
+    export HOST_USERNAME
+    export GUEST_USERNAME
     export REDSTACK_SCRIPTS
     export SERVICE_TYPE
     export ESCAPED_PATH_REDDWARF
