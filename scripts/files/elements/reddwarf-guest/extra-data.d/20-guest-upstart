@@ -3,8 +3,8 @@
 set -e
 set -o xtrace
 
-# CONTEXT: Host
-# Purpose: stages the bootstrap file and upstart conf file while replacing variables so that guest image is properly
+# CONTEXT: HOST prior to IMAGE BUILD as SCRIPT USER
+# PURPOSE: stages the bootstrap file and upstart conf file while replacing variables so that guest image is properly
 # configured
 
 source $_LIB/die

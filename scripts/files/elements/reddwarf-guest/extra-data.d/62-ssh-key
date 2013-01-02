@@ -3,8 +3,8 @@
 set -e
 set -o xtrace
 
-# CONTEXT: Host
-# Purpose: creates the SSH key on the host if it doesn't exist.  Then this copies the keys over to a staging area where
+# CONTEXT: HOST prior to IMAGE BUILD as SCRIPT USER
+# PURPOSE: creates the SSH key on the host if it doesn't exist.  Then this copies the keys over to a staging area where
 # they will be duplicated in the guest VM.
 # This process allows the host to log into the guest but more importantly the guest phones home to get the reddwarf
 # source

@@ -6,6 +6,8 @@
 set -e
 set -o xtrace
 
-cat <<EOL >> /etc/apt/sources.list.d/reddwarf-source-host.list
-deb http://10.0.0.1:8080/debian squeeze main
-EOL
+source $_LIB/die
+
+[ -n "$TMP_HOOKS_PATH." ] || die "Temp hook path not set"
+
+cat ${REDSTACK_SCRIPTS}/files/apt_repo.list > ${TMP_HOOKS_PATH}/reddwarf-source-host.list
