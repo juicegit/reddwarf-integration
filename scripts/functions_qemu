@@ -16,7 +16,7 @@ function build_vm() {
 
     HOMEDIR=$1
     HOST_USERNAME=$2
-    GUEST_USERNAME="$2-guest"
+    GUEST_USERNAME=${GUEST_USERNAME:-$2}
     UBUNTU_DISTRO_NAME=$3
     VM_PATH=$4
     SERVICE_TYPE=$5

@@ -29,7 +29,7 @@ PATH_PYTHON_REDDWARFCLIENT=/opt/stack/python-reddwarfclient
 # diskimage-builder information
 REPO_DISKIMAGEBUILDER=https://github.com/stackforge/diskimage-builder.git
 BRANCH_DISKIMAGEBUILDER=master
-PATH_DISKIMAGEBUILDER=/opt/diskimage-builder
+PATH_DISKIMAGEBUILDER=/opt/stack/diskimage-builder
 
 # Openstack Github paths
 OPENSTACK_GITHUB=git://github.com/openstack
