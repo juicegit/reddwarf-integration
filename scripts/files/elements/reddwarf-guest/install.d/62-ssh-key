@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CONTEXT: guest
+# CONTEXT: GUEST during CONSTRUCTION as ROOT
 # PURPOSE: take "staged" ssh keys (see extra-data.d/62-ssh-key) and put them in the GUEST_USERS home directory
 
 set -e

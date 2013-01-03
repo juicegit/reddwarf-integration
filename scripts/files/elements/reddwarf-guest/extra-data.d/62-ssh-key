@@ -22,9 +22,9 @@ fi
 
 generate_empty_passphrase_ssh_key () {
     echo "generating a empty passphrase DEV ONLY rsa key"
-    HOMEDIR=$1
+    SSH_DIR=$1
     expect -c "
-spawn sudo -Hiu ${HOST_USERNAME} /usr/bin/ssh-keygen -f ${HOMEDIR}/.ssh/id_rsa -q
+spawn sudo -Hiu ${HOST_USERNAME} /usr/bin/ssh-keygen -f ${SSH_DIR}/id_rsa -q
 expect \"empty for no passphrase\"
 send \n
 expect assphrase
@@ -32,37 +32,42 @@ send \n
 expect eof"
 }
 
-HOMEDIR=/home/${HOST_USERNAME}
+add_host_key_to_authorizedkeys () {
+    SSH_DIR=$1
+    # test to see if the host key is already in its own authorized_keys file - if not then add it.  This is then later copied
+    # to the guest image
+    is_in_keyfile=`cat ${SSH_DIR}/id_rsa.pub | grep -f - ${SSH_DIR}/authorized_keys | wc -l`
+    if [ $is_in_keyfile == 0 ]; then
+        echo "Adding keyfile to authorized_keys, it does not yet exist"
+        cat ${SSH_DIR}/id_rsa.pub >> ${SSH_DIR}/authorized_keys
+    else
+        echo "Keyfile already exists in authorized_keys - skipping"
+    fi
+}
 
-if [ -e ${HOMEDIR}/.ssh ]; then
-    die "/home/${HOMEDIR} already exists"
+HOME_DIR=/home/${HOST_USERNAME}
+SSH_DIR=${HOME_DIR}/.ssh
+
+if [ -e ${SSH_DIR} ]; then
+    die "${SSH_DIR} already exists"
+else
+    sudo -Hiu ${HOST_USERNAME} mkdir -p ${SSH_DIR}
 fi
 
-if [ ! -e ${HOMEDIR}/.ssh ]; then
-    sudo -Hiu ${HOST_USERNAME} mkdir -p ${HOMEDIR}/.ssh
-fi
-
-if [ ! -f ${HOMEDIR}/.ssh/id_rsa.pub ]
-then
+if [ ! -f ${SSH_DIR}/id_rsa.pub ]; then
     sudo apt-get -y install expect
-
-    #generate a public key
-    generate_empty_passphrase_ssh_key ${HOMEDIR}
+    generate_empty_passphrase_ssh_key ${SSH_DIR}
 fi
 
-# test to see if the host key is already in its own authorized_keys file - if not then add it.  This is then later copied
-# to the guest image
-is_in_keyfile=`cat ${HOMEDIR}/.ssh/id_rsa.pub | grep -f - ${HOMEDIR}/.ssh/authorized_keys | wc -l`
-if [ $is_in_keyfile == 0 ]; then
-    echo "Adding keyfile to authorized_keys, it does not yet exist"
-    cat ${HOMEDIR}/.ssh/id_rsa.pub >> ${HOMEDIR}/.ssh/authorized_keys
-fi
+add_host_key_to_authorizedkeys ${SSH_DIR}
 
 # copy files over the "staging" area for the guest image (they'll later be put in the correct location by the guest user
 # not these keys should not be overridded otherwise a) you won't be able to ssh in and b) the guest won't be able to
 # rsync the files
-if [ -e ${HOMEDIR}/.ssh/authorized_keys ]; then
-   sudo -Hiu ${HOST_USERNAME} cat ${HOMEDIR}/.ssh/authorized_keys > ${TMP_HOOKS_PATH}/ssh-authorized-keys
-   sudo -Hiu ${HOST_USERNAME} cat ${HOMEDIR}/.ssh/id_rsa > ${TMP_HOOKS_PATH}/id_rsa
-   sudo -Hiu ${HOST_USERNAME} cat ${HOMEDIR}/.ssh/id_rsa.pub > ${TMP_HOOKS_PATH}/id_rsa.pub
+if [ -e ${SSH_DIR}/authorized_keys ]; then
+   sudo -Hiu ${HOST_USERNAME} cat ${SSH_DIR}/authorized_keys > ${TMP_HOOKS_PATH}/ssh-authorized-keys
+   sudo -Hiu ${HOST_USERNAME} cat ${SSH_DIR}/id_rsa > ${TMP_HOOKS_PATH}/id_rsa
+   sudo -Hiu ${HOST_USERNAME} cat ${SSH_DIR}/id_rsa.pub > ${TMP_HOOKS_PATH}/id_rsa.pub
+else
+    die "SSH Authorized Keys file creation failed"
 fi
