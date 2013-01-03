@@ -6,8 +6,6 @@
 set -e
 set -o xtrace
 
-source $_LIB/die
-
 if [ -e "/tmp/in_target.d/ssh-authorized-keys" ]; then
     if ! [ -e "/home/${GUEST_USERNAME}/.ssh" ]; then
         sudo -Hiu ${GUEST_USERNAME} mkdir ~${GUEST_USERNAME}/.ssh/
@@ -20,5 +18,6 @@ if [ -e "/tmp/in_target.d/ssh-authorized-keys" ]; then
         sudo -Hiu ${GUEST_USERNAME} dd of=~${GUEST_USERNAME}/.ssh/id_rsa.pub if=/tmp/in_target.d/id_rsa.pub
     fi
 else
-    die "SSH Keys were not staged by host"
+    echo "SSH Keys were not staged by host"
+    exit -1
 fi
