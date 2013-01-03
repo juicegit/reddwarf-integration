@@ -49,8 +49,9 @@ HOME_DIR=/home/${HOST_USERNAME}
 SSH_DIR=${HOME_DIR}/.ssh
 
 if [ -e ${SSH_DIR} ]; then
-    die "${SSH_DIR} already exists"
+    echo "${SSH_DIR} already exists"
 else
+    echo "Creating ${SSH_DIR} for ${HOST_USERNAME}"
     sudo -Hiu ${HOST_USERNAME} mkdir -p ${SSH_DIR}
 fi
 
