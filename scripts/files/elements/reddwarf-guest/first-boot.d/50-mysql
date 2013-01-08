@@ -17,6 +17,7 @@ EOF
 $MYSQL_BOOTSTRAP < $sqltfile
 rm -f $sqltfile
 
+# move my.cnf from first-boot.d to /etc/mysql/my.cnf
 CNF=/etc/mysql/my.cnf
 cp -f $(dirname $0)/my.cnf $CNF
 sed -i "s/^bind-address=.*/bind-address=$HOST_IP/" $CNF

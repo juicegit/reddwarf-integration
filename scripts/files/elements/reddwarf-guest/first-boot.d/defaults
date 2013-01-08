@@ -1,6 +1,7 @@
 set -e
 
-MYSQL_PASS=${MYSQL_PASS:-password}
+# currently there is no modification of this
+MYSQL_PASS=${MYSQL_PASS:-e1a2c042c828d3566d0a}
 
 # HOST_IP
 # Find the interface used for the default route
