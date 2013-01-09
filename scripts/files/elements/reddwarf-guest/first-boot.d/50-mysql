@@ -2,18 +2,5 @@
 set -e
 set -o xtrace
 
-# get MYSQL_PASS and HOST_IP
-source $(dirname $0)/defaults
-
-service mysql stop || true
-
-#MYSQL_BOOTSTRAP="/usr/sbin/mysqld --bootstrap --user=mysql --skip-grant-tables"
-
-#$MYSQL_BOOTSTRAP
-
-# move my.cnf from first-boot.d to /etc/mysql/my.cnf
-#CNF=/etc/mysql/my.cnf
-#cp -f $(dirname $0)/my.cnf $CNF
-#sed -i "s/^bind-address=.*/bind-address=$HOST_IP/" $CNF
-
-#service mysql start
+# do nothing here and let mysql run with default settings
+#service mysql stop || true
