@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-set -o xtrace
-
-# do nothing here and let mysql run with default settings
-#service mysql stop || true

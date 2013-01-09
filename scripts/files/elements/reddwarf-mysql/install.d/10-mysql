@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# Install controller base required packages
+# CONTEXT: GUEST during CONSTRUCTION as ROOT
+# PURPOSE: Install controller base required packages
 
 set -e
 set -o xtrace
