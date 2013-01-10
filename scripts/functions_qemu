@@ -17,7 +17,6 @@ function build_vm() {
     # set variables here and ensure they are not changed during the duration of this script
     readonly HOMEDIR=$1
     readonly HOST_USERNAME=$2
-    readonly VM_PATH=$4
     GUEST_USERNAME=${GUEST_USERNAME:-$2}
 
     if [ ! $SERVICE_TYPE == 'mysql' ]; then
