@@ -495,19 +495,9 @@ function cmd_build() {
 
 ###############################################################################
 # Build the image
+# see functions_qemu
 ###############################################################################
 
-function generate_empty_passphrase_ssh_key() {
-    exclaim "generating a empty passphrase DEV ONLY rsa key"
-    HOMEDIR=$1
-    expect -c "
-spawn /usr/bin/ssh-keygen -f $HOMEDIR/.ssh/id_rsa -q
-expect \"empty for no passphrase\"
-send \n
-expect assphrase
-send \n
-expect eof"
-}
 
 # Grab a numbered field from python prettytable output
 # Fields are numbered starting with 1

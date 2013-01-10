@@ -14,12 +14,17 @@ function install_prep_packages() {
 function build_vm() {
     exclaim "Actually building the image, this can take up to 15 minutes"
 
-    HOMEDIR=$1
-    HOST_USERNAME=$2
+    # set variables here and ensure they are not changed during the duration of this script
+    readonly HOMEDIR=$1
+    readonly HOST_USERNAME=$2
+    readonly VM_PATH=$4
     GUEST_USERNAME=${GUEST_USERNAME:-$2}
-    UBUNTU_DISTRO_NAME=$3
-    VM_PATH=$4
-    SERVICE_TYPE=$5
+
+    if [ ! $SERVICE_TYPE == 'mysql' ]; then
+        exclaim "Warning: You did not pass in a valid image type, the image may fail"
+    fi
+
+    manage_ssh_keys
 
     mkdir -p $VM_PATH
     export RELEASE=precise
@@ -28,7 +33,7 @@ function build_vm() {
     export REDSTACK_SCRIPTS
     export SERVICE_TYPE
     export ESCAPED_PATH_REDDWARF
-    ${PATH_DISKIMAGEBUILDER}/bin/disk-image-create -a amd64 -o "${VM_PATH}/${UBUNTU_DISTRO_NAME}_mysql_image" -x base vm reddwarf-guest reddwarf-percona
+    ${PATH_DISKIMAGEBUILDER}/bin/disk-image-create -a amd64 -o "${VM_PATH}/${UBUNTU_DISTRO_NAME}_mysql_image" -x base vm reddwarf-guest reddwarf-mysql
 }
 
 function cmd_build_image() {
@@ -38,14 +43,15 @@ function cmd_build_image() {
         echo "You must pass an image type to build, like mysql"
         exit 1
     fi
-    SERVICE_TYPE=$1
+    readonly SERVICE_TYPE=$1
 
 
     USERNAME=`whoami`
     mkdir -p $USERHOME/images
-    VM_PATH=$USERHOME/images/precise_${SERVICE_TYPE}_image
-    UBUNTU_DISTRO=ubuntu_precise
-    UBUNTU_DISTRO_NAME=precise
+    # set values to readonly as they should not change here forward
+    readonly VM_PATH=$USERHOME/images/precise_${SERVICE_TYPE}_image
+    readonly UBUNTU_DISTRO=ubuntu_precise
+    readonly UBUNTU_DISTRO_NAME=precise
 
     # If the path doesnt exist, build it, otherwise just upload it
     if [ ! -d $VM_PATH ]
@@ -66,3 +72,46 @@ function clean_instances() {
     LIST=`virsh -q list|awk '{print $1}'`
     for i in $LIST; do sudo virsh destroy $i; done
 }
+
+function manage_ssh_keys() {
+
+    readonly SSH_DIR=${HOMEDIR}/.ssh
+
+    if [ -e ${SSH_DIR} ]; then
+        echo "${SSH_DIR} already exists"
+    else
+        echo "Creating ${SSH_DIR} for ${HOST_USERNAME}"
+        sudo -Hiu ${HOST_USERNAME} mkdir -p ${SSH_DIR}
+    fi
+
+    if [ ! -f ${SSH_DIR}/id_rsa.pub ]; then
+        sudo apt-get -y install expect
+        generate_empty_passphrase_ssh_key ${HOST_USERNAME}
+    fi
+
+    add_host_key_to_authorizedkeys
+}
+
+generate_empty_passphrase_ssh_key () {
+    echo "generating a empty passphrase DEV ONLY rsa key"
+    expect -c "
+spawn sudo -Hiu ${HOST_USERNAME} /usr/bin/ssh-keygen -f ${SSH_DIR}/id_rsa -q
+expect \"empty for no passphrase\"
+send \n
+expect assphrase
+send \n
+expect eof"
+}
+
+add_host_key_to_authorizedkeys () {
+    # test to see if the host key is already in its own authorized_keys file - if not then add it.  This is then later copied
+    # to the guest image
+    is_in_keyfile=`cat ${SSH_DIR}/id_rsa.pub | grep -f - ${SSH_DIR}/authorized_keys | wc -l`
+    if [ $is_in_keyfile == 0 ]; then
+        echo "Adding keyfile to authorized_keys, it does not yet exist"
+        cat ${SSH_DIR}/id_rsa.pub >> ${SSH_DIR}/authorized_keys
+    else
+        echo "Keyfile already exists in authorized_keys - skipping"
+    fi
+}
+
