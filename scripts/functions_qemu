@@ -44,8 +44,6 @@ function cmd_build_image() {
         echo "You must pass an image type to build, like mysql"
         exit 1
     fi
-    readonly SERVICE_TYPE=$1
-
 
     USERNAME=`whoami`
     mkdir -p $USERHOME/images
