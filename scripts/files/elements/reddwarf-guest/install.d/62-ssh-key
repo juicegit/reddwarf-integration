@@ -11,7 +11,8 @@ TMP_HOOKS_DIR="/tmp/in_target.d"
 
 if [ -e "${TMP_HOOKS_DIR}/ssh-authorized-keys" ]; then
     if [ ! -e ${SSH_DIR} ]; then
-        sudo -Hiu ${GUEST_USERNAME} mkdir ${SSH_DIR}
+        mkdir ${SSH_DIR}
+        chown ${GUEST_USERNAME} ${SSH_DIR}
     fi
     sudo -Hiu ${GUEST_USERNAME} dd of=${SSH_DIR}/authorized_keys conv=notrunc if=${TMP_HOOKS_DIR}/ssh-authorized-keys
     if [ ! -e "${SSH_DIR}/id_rsa" ]; then

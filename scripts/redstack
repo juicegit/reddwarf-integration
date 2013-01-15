@@ -308,8 +308,9 @@ function install_diskimagebuilder() {
         echo "Cloning from git."
         mkdir -p $PATH_DISKIMAGEBUILDER
         git clone $REPO_DISKIMAGEBUILDER $PATH_DISKIMAGEBUILDER
-        echo "Adding Reddwarf Elements to Disk Image Builder"
-        cp -r $REDSTACK_SCRIPTS/files/elements/* $PATH_DISKIMAGEBUILDER/elements
+        echo "Linking Reddwarf Elements to Disk Image Builder"
+        ln -s $REDSTACK_SCRIPTS/files/elements/reddwarf-guest $PATH_DISKIMAGEBUILDER/elements/reddwarf-guest
+        ln -s $REDSTACK_SCRIPTS/files/elements/reddwarf-mysql $PATH_DISKIMAGEBUILDER/elements/reddwarf-mysql
     fi
 }
 
