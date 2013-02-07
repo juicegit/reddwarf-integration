@@ -4,7 +4,7 @@
 # Some binaries might be under /sbin or /usr/sbin, so make sure sudo will
 # see them by forcing PATH
 host_name=`hostname`
-cat "127.0.0.1 ${host_name}" >> /etc/hosts
+echo "127.0.0.1 ${host_name}" >> /etc/hosts
 
 TEMPFILE=`mktemp`
 echo "GUEST_USERNAME ALL=(ALL) NOPASSWD:ALL" > $TEMPFILE
