@@ -32,7 +32,6 @@ apt-get -y purge accountsservice        \
                  cpp\
                  cpp-4.6\
                  curl\
-                 dbaas-mycnf\
                  dbus\
                  dmidecode\
                  dnsutils\
@@ -167,7 +166,6 @@ apt-get -y purge accountsservice        \
                  linux-headers-virtual\
                  linux-image-3.2.0-37-generic\
                  linux-image-generic\
-                 linux-virtual\
                  lshw\
                  lsof\
                  ltrace\
