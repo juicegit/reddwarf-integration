@@ -6,6 +6,6 @@ server 127.127.1.0
 fudge 127.127.1.0 stratum 10
 EOF
 
-#mv /etc/ntp.conf /etc/ntp.conf.orig
-#mv $ntpfile /etc/ntp.conf
-#service ntp restart
+mv /etc/ntp.conf /etc/ntp.conf.orig
+mv $ntpfile /etc/ntp.conf
+service ntp restart

@@ -7,7 +7,7 @@ set -e
 set -o xtrace
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get -y purge accountsservice        \
+apt-get -y purge accountsservice\
                  acpid\
                  apport\
                  apport-symptoms\
@@ -161,7 +161,6 @@ apt-get -y purge accountsservice        \
                  libxinerama1\
                  libxrandr2\
                  libxrender1\
-                 linux-headers-3.2.0-37\
                  linux-image-3.2.0-37-generic\
                  linux-image-generic\
                  lshw\
@@ -175,7 +174,6 @@ apt-get -y purge accountsservice        \
                  mtr-tiny\
                  nano\
                  ntfs-3g\
-                 ntp\
                  open-iscsi\
                  open-iscsi-utils\
                  parted\
